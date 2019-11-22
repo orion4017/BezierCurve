@@ -133,6 +133,7 @@ namespace BezierCurve
                 height = 300;
 
             data.image = new Bitmap(img, width, height);
+            data.directImage = new DirectBitmap(data.image);
         }
 
         public float CalculateAngle()

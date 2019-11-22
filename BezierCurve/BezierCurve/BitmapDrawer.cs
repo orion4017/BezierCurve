@@ -8,11 +8,10 @@ using System.Drawing.Drawing2D;
 
 namespace BezierCurve
 {
-    public delegate void TransformFunction(Graphics graphics, DataManipulator manipulator);
-
     public class BitmapDrawer
     {
-        TransformFunction transformFunction;
+        public delegate void TransformFunction(Graphics graphics, DataManipulator manipulator);
+        public TransformFunction DrawImage;
         private DataProvider data;
         private Brush pointBrush = new SolidBrush(Color.Black);
         private Pen linePen = new Pen(Color.LightPink);
@@ -21,21 +20,21 @@ namespace BezierCurve
         public BitmapDrawer(DataProvider data)
         {
             this.data = data;
-            transformFunction = new TransformFunction(DrawImageWinForms);
+            DrawImage = new TransformFunction(DrawImageWinForms);
         }
 
         #region transformFunction setters
         public void SetImageFast()
         {
-            transformFunction = new TransformFunction(DrawImageWinForms);
+            DrawImage = new TransformFunction(DrawImageWinForms);
         }
         public void SetImageNaive()
         {
-            transformFunction = new TransformFunction(DrawImageNaive);
+            DrawImage = new TransformFunction(DrawImageNaive);
         }
         public void SetImageFiltering()
         {
-            transformFunction = new TransformFunction(DrawImageFiltering);
+            DrawImage = new TransformFunction(DrawImageFiltering);
         }
         #endregion
 
@@ -74,11 +73,6 @@ namespace BezierCurve
             }
         }
 
-        public void DrawImage(Graphics graphics, DataManipulator manipulator)
-        {
-            transformFunction(graphics, manipulator);
-        }
-
         private void DrawImageWinForms(Graphics graphics, DataManipulator manipulator)
         {
             if (data.image == null || data.Points.Count < 3) return;
@@ -95,7 +89,19 @@ namespace BezierCurve
 
         private void DrawImageNaive(Graphics graphics, DataManipulator manipulator)
         {
-            throw new NotImplementedException();
+            DirectBitmap image = data.directImage;
+            PointF point = new PointF(data.BezierPoints[data.index, 0], data.BezierPoints[data.index, 1]);
+            PointF center = new PointF(image.Width / 2, image.Height / 2);
+            float angle = manipulator.CalculateAngle() * (float)Math.PI / 180f;
+            for (int i = 0; i < image.Width; i++)
+            {
+                for (int j = 0; j < image.Height; j++)
+                {
+                    (float, float) vec = (i - center.X, j - center.Y);
+                    (float, float) vec2 = (vec.Item1 * (float)Math.Cos(angle) - vec.Item2 * (float)Math.Sin(angle), vec.Item1 * (float)Math.Sin(angle) + vec.Item2 * (float)Math.Cos(angle));
+                    graphics.DrawRectangle(new Pen(image.GetPixel(i, j)), new Rectangle((int)(point.X + vec2.Item1), (int)(point.Y + vec2.Item2), 1, 1));
+                }
+            }
         }
 
         private void DrawImageFiltering(Graphics graphics, DataManipulator manipulator)

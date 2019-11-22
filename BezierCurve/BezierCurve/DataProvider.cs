@@ -9,6 +9,8 @@ namespace BezierCurve
 {
     public class DataProvider
     {
+        private int _index = 0;
+
         public int Width;
         public int Height;
 
@@ -17,7 +19,7 @@ namespace BezierCurve
         public float[,] BezierPoints;
 
         public Bitmap image;
-        private int _index = 0;
+        public DirectBitmap directImage;
         public int index
         {
             get => _index;

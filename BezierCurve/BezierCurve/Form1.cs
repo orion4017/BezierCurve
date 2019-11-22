@@ -153,6 +153,7 @@ namespace BezierCurve
             if (radioButton1.Checked == true)
             {
                 drawer.SetImageFast();
+                pictureBox1.Invalidate();
             }
         }
 
@@ -161,6 +162,7 @@ namespace BezierCurve
             if (radioButton2.Checked == true)
             {
                 drawer.SetImageNaive();
+                pictureBox1.Invalidate();
             }
         }
 
@@ -169,6 +171,7 @@ namespace BezierCurve
             if (radioButton3.Checked == true)
             {
                 drawer.SetImageFiltering();
+                pictureBox1.Invalidate();
             }
         }
         #endregion
