@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,7 +30,10 @@ namespace BezierCurve
         {
             drawer.DrawPoints(e.Graphics);
             drawer.DrawLines(e.Graphics);
-            drawer.DrawBezier(e.Graphics); 
+            drawer.DrawBezier(e.Graphics);
+            e.Graphics.DrawRectangle(new Pen(Color.Red), new Rectangle(199, 199, 3, 3));
+            e.Graphics.DrawRectangle(new Pen(Color.Red), new Rectangle(data.Width / 2 - 1, data.Height / 2 - 1, 3, 3));
+            drawer.DrawImage(e.Graphics, manipulator);
         }
 
         #region Button events
@@ -44,6 +49,28 @@ namespace BezierCurve
             checkBox1.Checked = true;
             data.Points.Clear();
             pictureBox1.Invalidate();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (data.image == null)
+                using (OpenFileDialog dlg = new OpenFileDialog())
+                {
+                    dlg.Title = "Open Image";
+                    dlg.Filter = "Image files (*.bmp;*.png;*.jpg)|*.bmp;*.png;*.jpg";
+
+                    if (dlg.ShowDialog() == DialogResult.OK)
+                    {
+                        manipulator.LoadImage(dlg.FileName);
+                    }
+                    pictureBox1.Invalidate();
+                }
+            else
+            {
+                data.index += 1;
+                Debug.WriteLine(data.index);
+                pictureBox1.Invalidate();
+            }
         }
         #endregion
 
@@ -87,7 +114,7 @@ namespace BezierCurve
 
         private void pictureBox1_MouseDownCatchPoint(object sender, MouseEventArgs e)
         {
-            if(manipulator.TryCatchPoint(e.Location) == true)
+            if (manipulator.TryCatchPoint(e.Location) == true)
             {
                 this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUpDropPoint);
                 this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMoveMovePoint);
@@ -119,6 +146,33 @@ namespace BezierCurve
             pictureBox1.Invalidate();
         }
         #endregion
+
+        #region RadioButton events
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton1.Checked == true)
+            {
+                drawer.SetImageFast();
+            }
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton2.Checked == true)
+            {
+                drawer.SetImageNaive();
+            }
+        }
+
+        private void radioButton3_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton3.Checked == true)
+            {
+                drawer.SetImageFiltering();
+            }
+        }
+        #endregion
+
     }
 
 }
