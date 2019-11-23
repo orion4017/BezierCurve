@@ -134,22 +134,28 @@ namespace BezierCurve
 
             data.image = new Bitmap(img, width, height);
             data.directImage = new DirectBitmap(data.image);
+            data.miniature = new Bitmap(img, data.miniatureWidth, data.miniatureHeight);
         }
 
+        #region Angle calculations
         public float CalculateAngle()
         {
+            float angle;
             if (data.index == 0)
             {
-                return CalculateRightAngle();
+                angle = CalculateRightAngle();
             }
             else if (data.index == data.pointsCount - 1)
             {
-                return CalculateLeftAngle();
+                angle = CalculateLeftAngle();
             }
             else
             {
-                return (CalculateRightAngle() + CalculateLeftAngle()) / 2;
+                angle = (CalculateRightAngle() + CalculateLeftAngle()) / 2;
             }
+
+            if (data.rotate) return angle + data.rotateAngle;
+            return angle;
         }
 
         private float CalculateRightAngle()
@@ -189,6 +195,7 @@ namespace BezierCurve
             else
                 return (float)((angle * -180 / Math.PI) - (double)90);
         }
+        #endregion
 
         private double VectorLength((float, float) vec)
         {

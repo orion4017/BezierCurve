@@ -73,6 +73,7 @@ namespace BezierCurve
             }
         }
 
+        #region DrawImage functions
         private void DrawImageWinForms(Graphics graphics, DataManipulator manipulator)
         {
             if (data.image == null || data.Points.Count < 3) return;
@@ -89,6 +90,8 @@ namespace BezierCurve
 
         private void DrawImageNaive(Graphics graphics, DataManipulator manipulator)
         {
+            if (data.image == null || data.Points.Count < 3) return;
+
             DirectBitmap image = data.directImage;
             PointF point = new PointF(data.BezierPoints[data.index, 0], data.BezierPoints[data.index, 1]);
             PointF center = new PointF(image.Width / 2, image.Height / 2);
@@ -108,6 +111,7 @@ namespace BezierCurve
         {
             throw new NotImplementedException();
         }
+        #endregion
 
         //public Bitmap RotateImage(Bitmap img, float rotationAngle)
         //{

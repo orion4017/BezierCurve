@@ -20,7 +20,7 @@ namespace BezierCurve
         public Form1()
         {
             InitializeComponent();
-            data = new DataProvider(pictureBox1.Width, pictureBox1.Height);
+            data = new DataProvider(pictureBox1.Width, pictureBox1.Height, pictureBox2.Width, pictureBox2.Height);
             drawer = new BitmapDrawer(data);
             manipulator = new DataManipulator(data, drawer);
             checkBox1.Checked = true;
@@ -34,6 +34,13 @@ namespace BezierCurve
             e.Graphics.DrawRectangle(new Pen(Color.Red), new Rectangle(199, 199, 3, 3));
             e.Graphics.DrawRectangle(new Pen(Color.Red), new Rectangle(data.Width / 2 - 1, data.Height / 2 - 1, 3, 3));
             drawer.DrawImage(e.Graphics, manipulator);
+
+            if (data.repeat)
+            {
+                if (data.followLine) data.index++;
+                if (data.rotate) data.rotateAngle += data.rotateAngleIncrement;
+                pictureBox1.Invalidate();
+            }
         }
 
         #region Button events
@@ -41,6 +48,17 @@ namespace BezierCurve
         {
             checkBox2.Checked = true;
             data.Points.Clear();
+            manipulator.TryNewPoint(new EditablePoint(35,37));
+            manipulator.TryNewPoint(new EditablePoint(120,686));
+            manipulator.TryNewPoint(new EditablePoint(1074,493));
+            manipulator.TryNewPoint(new EditablePoint(1076,156));
+            manipulator.TryNewPoint(new EditablePoint(335,62));
+            manipulator.TryNewPoint(new EditablePoint(151,607));
+            manipulator.TryNewPoint(new EditablePoint(983,776));
+            manipulator.TryNewPoint(new EditablePoint(455,134));
+            manipulator.TryNewPoint(new EditablePoint(134,434));
+
+            manipulator.CalculateBezierPoints();
             pictureBox1.Invalidate();
         }
 
@@ -53,24 +71,19 @@ namespace BezierCurve
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (data.image == null)
-                using (OpenFileDialog dlg = new OpenFileDialog())
-                {
-                    dlg.Title = "Open Image";
-                    dlg.Filter = "Image files (*.bmp;*.png;*.jpg)|*.bmp;*.png;*.jpg";
-
-                    if (dlg.ShowDialog() == DialogResult.OK)
-                    {
-                        manipulator.LoadImage(dlg.FileName);
-                    }
-                    pictureBox1.Invalidate();
-                }
-            else
+            using (OpenFileDialog dlg = new OpenFileDialog())
             {
-                data.index += 1;
-                Debug.WriteLine(data.index);
+                dlg.Title = "Open Image";
+                dlg.Filter = "Image files (*.bmp;*.png;*.jpg)|*.bmp;*.png;*.jpg";
+
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    manipulator.LoadImage(dlg.FileName);
+                }
                 pictureBox1.Invalidate();
+                pictureBox2.Image = data.miniature;
             }
+
         }
         #endregion
 
@@ -176,6 +189,27 @@ namespace BezierCurve
         }
         #endregion
 
-    }
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            data.followLine = !data.followLine;
+        }
 
+        private void checkBox4_CheckedChanged(object sender, EventArgs e)
+        {
+            data.rotate = !data.rotate;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if (data.image != null)
+            {
+                if (data.repeat == false)
+                    button4.Text = "Stop animation";
+                else
+                    button4.Text = "Start animation";
+                data.repeat = !data.repeat;
+                pictureBox1.Invalidate();
+            }
+        }
+    }
 }
