@@ -22,7 +22,7 @@ namespace BezierCurve
         public int miniatureWidth;
         public int miniatureHeight;
 
-        public List<EditablePoint> Points; // limit 20 pkt
+        public List<EditablePoint> Points;
         public int pointsCount = 301;
         public float[,] BezierPoints;
 

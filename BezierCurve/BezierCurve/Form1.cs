@@ -31,8 +31,6 @@ namespace BezierCurve
             drawer.DrawPoints(e.Graphics);
             drawer.DrawLines(e.Graphics);
             drawer.DrawBezier(e.Graphics);
-            e.Graphics.DrawRectangle(new Pen(Color.Red), new Rectangle(199, 199, 3, 3));
-            e.Graphics.DrawRectangle(new Pen(Color.Red), new Rectangle(data.Width / 2 - 1, data.Height / 2 - 1, 3, 3));
             drawer.DrawImage(e.Graphics, manipulator);
 
             if (data.repeat)
@@ -85,6 +83,19 @@ namespace BezierCurve
             }
 
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if (data.image != null)
+            {
+                if (data.repeat == false)
+                    button4.Text = "Stop animation";
+                else
+                    button4.Text = "Start animation";
+                data.repeat = !data.repeat;
+                pictureBox1.Invalidate();
+            }
+        }
         #endregion
 
         #region CheckBox events
@@ -112,6 +123,16 @@ namespace BezierCurve
             {
                 this.pictureBox1.MouseDown -= new MouseEventHandler(this.pictureBox1_MouseDownCatchPoint);
             }
+        }
+
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            data.followLine = !data.followLine;
+        }
+
+        private void checkBox4_CheckedChanged(object sender, EventArgs e)
+        {
+            data.rotate = !data.rotate;
         }
         #endregion
 
@@ -189,27 +210,8 @@ namespace BezierCurve
         }
         #endregion
 
-        private void checkBox3_CheckedChanged(object sender, EventArgs e)
-        {
-            data.followLine = !data.followLine;
-        }
 
-        private void checkBox4_CheckedChanged(object sender, EventArgs e)
-        {
-            data.rotate = !data.rotate;
-        }
 
-        private void button4_Click(object sender, EventArgs e)
-        {
-            if (data.image != null)
-            {
-                if (data.repeat == false)
-                    button4.Text = "Stop animation";
-                else
-                    button4.Text = "Start animation";
-                data.repeat = !data.repeat;
-                pictureBox1.Invalidate();
-            }
-        }
+
     }
 }
