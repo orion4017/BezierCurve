@@ -24,6 +24,7 @@ namespace BezierCurve
             drawer = new BitmapDrawer(data);
             manipulator = new DataManipulator(data, drawer);
             checkBox1.Checked = true;
+            pictureBox2.Image = data.miniature;
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)

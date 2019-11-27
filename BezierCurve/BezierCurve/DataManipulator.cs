@@ -19,6 +19,7 @@ namespace BezierCurve
         {
             this.data = data;
             this.drawer = drawer;
+            LoadImage();
         }
 
         #region Points adding/moving
@@ -135,6 +136,37 @@ namespace BezierCurve
             data.image = new Bitmap(img, width, height);
             data.directImage = new DirectBitmap(data.image);
             data.miniature = new Bitmap(img, data.miniatureWidth, data.miniatureHeight);
+            data.colorMap = new Color[width, height];
+
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    data.colorMap[i, j] = data.directImage.GetPixel(i, j);
+                }
+            }
+        }
+        private void LoadImage()
+        {
+            Bitmap img = new Bitmap(Properties.Resources.mickey);
+            int width = img.Width, height = img.Height;
+            if (img.Width > 200)
+                width = 200;
+            if (img.Height > 300)
+                height = 300;
+
+            data.image = new Bitmap(img, width, height);
+            data.directImage = new DirectBitmap(data.image);
+            data.miniature = new Bitmap(img, data.miniatureWidth, data.miniatureHeight);
+            data.colorMap = new Color[width, height];
+
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    data.colorMap[i, j] = data.directImage.GetPixel(i, j);
+                }
+            }
         }
 
         #region Angle calculations
@@ -155,7 +187,7 @@ namespace BezierCurve
             }
 
             if (data.rotate) return angle + data.rotateAngle;
-            return angle;
+            return angle % 360;
         }
 
         private float CalculateRightAngle()

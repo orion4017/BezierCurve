@@ -10,11 +10,11 @@ namespace BezierCurve
     public class DataProvider
     {
         private int _index = 0;
+        private float _rotateAngle = 0;
 
         public bool repeat = false;
         public bool followLine = true;
         public bool rotate = false;
-        public float rotateAngle = 0;
         public float rotateAngleIncrement = 3;
 
         public int Width;
@@ -29,7 +29,13 @@ namespace BezierCurve
         public Bitmap image;
         public Bitmap miniature;
         public DirectBitmap directImage;
+        public Color[,] colorMap;
 
+        public float rotateAngle
+        {
+            get => _rotateAngle;
+            set => _rotateAngle = (value >= 360f ? value % 360 : value);
+        }
         public int index
         {
             get => _index;
@@ -45,6 +51,7 @@ namespace BezierCurve
 
             this.Points = new List<EditablePoint>();
             this.BezierPoints = new float[pointsCount,2]; // 0 - X, 1 - Y
+
         }
     }
 }
